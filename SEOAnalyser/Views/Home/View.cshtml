@@ -1,0 +1,68 @@
+﻿@model SEOAnalyser.Models.SEOAnalyserInputModel
+
+@{
+    ViewData["Title"] = "View";
+}
+
+<h2>SEO Analyser</h2>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="View">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="input" class="control-label"></label>
+                <input asp-for="input" class="form-control" placeholder="@Html.DisplayNameFor(model => model.input)" />
+                <span asp-validation-for="input" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="checkStopWord" /> @Html.DisplayNameFor(model => model.checkStopWord)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="checkMetadata" /> @Html.DisplayNameFor(model => model.checkMetadata)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="checkAllWord" /> @Html.DisplayNameFor(model => model.checkAllWord)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="checkExternalLink" /> @Html.DisplayNameFor(model => model.checkExternalLink)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script src="~/lib/kendo-ui-core/js/kendo.core.min.js"></script>
+    <script src="~/lib/kendo-ui-core/js/kendo.ui.core.min.js"></script>
+    <script src="~/lib/kendo-ui-core/js/kendo.sortable.min.js"></script>
+    <script src="~/lib/kendo-ui-core/js/kendo.pager.min.js"></script>
+    <script src="~/lib/kendo-ui-core/js/kendo.data.min.js"></script>
+
+    <script src="~/js/home.index.js"></script>
+}

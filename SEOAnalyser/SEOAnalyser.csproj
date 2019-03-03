@@ -1,12 +1,38 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\WebAPI\Common\Constants.cs" />
+    <Compile Remove="Areas\WebAPI\Common\ExternalLinkUtil.cs" />
+    <Compile Remove="Areas\WebAPI\Common\StopWordUtil.cs" />
+    <Compile Remove="Areas\WebAPI\Common\WebsiteUtil.cs" />
+    <Compile Remove="Areas\WebAPI\Models\AllWordModel.cs" />
+    <Compile Remove="Areas\WebAPI\Models\ExternalLinkModel.cs" />
+    <Compile Remove="Areas\WebAPI\Models\MetadataWordModel.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\Home\View.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ElmahCore" Version="1.2.4" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.9.1" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.2" />
+    <PackageReference Include="NHibernate" Version="5.2.4" />
+    <PackageReference Include="Swashbuckle" Version="5.6.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\WebAPI\Data\" />
+    <Folder Include="Areas\WebAPI\Views\" />
   </ItemGroup>
 
 </Project>
