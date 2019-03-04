@@ -49,6 +49,14 @@ function SubmitForm(frm, caller) {
         return;
     }
 
+    if (!$('#formAnalyse #checkAllWord').is(':checked')
+        && !$('#formAnalyse #checkExternalLink').is(':checked')
+        && !$('#formAnalyse #checkMetadata').is(':checked')) {
+
+        $('#formAnalyse #analyseInputVal').text("Please tick at least one filter/check option");
+        return;
+    }
+
     //get all words
     if ($('#formAnalyse #checkAllWord').is(':checked')) {
     console.log("checkAllWord is checked");
@@ -75,7 +83,7 @@ var columns = [
 
     {
         field: "word",
-        title: "Word"
+        title: "Word/Url"
     },
 
     {
@@ -91,65 +99,8 @@ function GetAllWords(fdata) {
     //get all words
     $('#divAllWords').show();
 
-    //$.ajax({
-    //    type: 'POST',
-    //    url: formAction,
-    //    contentType: "application/json",
-    //    beforeSend: function (xhr) {
-    //        xhr.setRequestHeader("RequestVerificationToken",
-    //            $('input:hidden[name="__RequestVerificationToken"]').val());
-    //    },
-    //    data: JSON.stringify(fdata)
-    //}).done(function (result) {
-        
-    //    if (result.Status === "Success") {
-    //        console.log(JSON.stringify(result.Data));
-
-    //    } else {
-    //        console.log(result.ErrorMessage);
-    //    }
-    //    });
-
-    $("#gridAllWord").kendoGrid({
-        dataSource: {
-            transport: {
-                read: {
-                    type: 'POST',
-                    url: formAction,
-                    contentType: "application/json",
-                    dataType: "json",
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader("RequestVerificationToken",
-                            $('input:hidden[name="__RequestVerificationToken"]').val());
-                    }
-                },
-                parameterMap: function (options) {
-                    return JSON.stringify(fdata);
-                }
-            },
-            schema: {
-                total: "count",
-                data: "data"
-            },
-            pageSize: 10,
-            serverPaging: false,
-            serverFiltering: false,
-            serverSorting: false
-        },
-        sortable: {
-            mode: "single",
-            allowUnsort: true
-        },
-        pageable: {
-            refresh: true,
-            pageSizes: [5, 10, 20],
-            buttonCount: 5
-        },
-        scrollable: false,
-        columns: columns
-    });
-    
-
+    var grid = $("#gridAllWord");
+    GenerateGrid(formAction, fdata, grid);
 }
 
 function GetExtLink(fdata) {
@@ -157,96 +108,30 @@ function GetExtLink(fdata) {
     $('#divExtLink').show();
   
     var formAction = "/api/ExternalLink";
-   
-    //$.ajax({
-    //    type: 'POST',
-    //    url: formAction,
-    //    contentType: "application/json",
-    //    beforeSend: function (xhr) {
-    //        xhr.setRequestHeader("RequestVerificationToken",
-    //            $('input:hidden[name="__RequestVerificationToken"]').val());
-    //    },
-    //    data: JSON.stringify(fdata)
-    //}).done(function (result) {
-      
-    //    if (result.Status === "Success") {
-    //        console.log(JSON.stringify(result.Data));
-    //    } else {
-    //        console.log(result.ErrorMessage);
-    //    }
-    //});
+    var grid = $("#gridExtLink");
+    GenerateGrid(formAction, fdata, grid);
 
-    $("#gridExtLink").kendoGrid({
-        dataSource: {
-            transport: {
-                read: {
-                    type: 'POST',
-                    url: formAction,
-                    contentType: "application/json",
-                    dataType: "json",
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader("RequestVerificationToken",
-                            $('input:hidden[name="__RequestVerificationToken"]').val());
-                    }
-                },
-                parameterMap: function (options) {
-                    return JSON.stringify(fdata);
-                }
-            },
-            schema: {
-                total: "count",
-                data: "data"
-            },
-            pageSize: 10,
-            serverPaging: false,
-            serverFiltering: false,
-            serverSorting: false
-        },
-        sortable: {
-            mode: "single",
-            allowUnsort: true
-        },
-        pageable: {
-            refresh: true,
-            pageSizes: [5, 10, 20],
-            buttonCount: 5
-        },
-        scrollable: false,
-        columns: columns
-    });
-
+    
 }
 
 function GetMeta(fdata) {
 
     $('#divMeta').show();
-
-    var formAction = "/api/MetadataWord";
    
-    //$.ajax({
-    //    type: 'POST',
-    //    url: formAction,
-    //    contentType: "application/json",
-    //    beforeSend: function (xhr) {
-    //        xhr.setRequestHeader("RequestVerificationToken",
-    //            $('input:hidden[name="__RequestVerificationToken"]').val());
-    //    },
-    //    data: JSON.stringify(fdata)
-    //}).done(function (result) {
-       
-    //    if (result.Status === "Success") {
-    //        console.log(JSON.stringify(result.Data));
-    //    } else {
-    //        console.log(result.ErrorMessage);
-    //    }
-    //});
+    var formAction = "/api/MetadataWord";
+    var grid = $("#gridMeta");
+    GenerateGrid(formAction,fdata,grid);
+   
+}
 
-    $("#gridMeta").kendoGrid({
+function GenerateGrid(url, data, grid) {
+
+   grid.kendoGrid({
         dataSource: {
             transport: {
                 read: {
                     type: 'POST',
-                    url: formAction,
+                    url: url,
                     contentType: "application/json",
                     dataType: "json",
                     beforeSend: function (xhr) {
@@ -255,7 +140,7 @@ function GetMeta(fdata) {
                     }
                 },
                 parameterMap: function (options) {
-                    return JSON.stringify(fdata);
+                    return JSON.stringify(data);
                 }
             },
             schema: {
@@ -279,7 +164,6 @@ function GetMeta(fdata) {
         scrollable: false,
         columns: columns
     });
-
 }
 
 

@@ -4,7 +4,7 @@ namespace SEOAnalyser.Models
 {
     public class SEOAnalyserInputModel
     {
-        //[Required(AllowEmptyStrings = false, ErrorMessage = "Please enter URL/Text")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Please enter URL/Text")]
         [Display(Name = "Enter URL/Text in English Only")]
         public string analyseInput { get; set; }
 
