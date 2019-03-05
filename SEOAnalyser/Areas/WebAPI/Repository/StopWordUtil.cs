@@ -41,6 +41,7 @@ namespace SEOAnalyser.Areas.WebAPI.Repository
                 var words = input.Split(Utilities.delimiters,
                 StringSplitOptions.RemoveEmptyEntries);
 
+
                 var lsWords = words.Where(x => !Utilities.stopWords.Contains(x.Trim().ToLower())).Select(x => x.ToLower().Trim()).ToList();
                 return lsWords;
 

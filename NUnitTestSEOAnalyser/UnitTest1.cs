@@ -1,19 +1,26 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using SEOAnalyser.Areas.WebAPI.Common;
 using SEOAnalyser.Areas.WebAPI.Controllers;
 using SEOAnalyser.Areas.WebAPI.Interface;
+using SEOAnalyser.Areas.WebAPI.Repository;
+using SEOAnalyser.Controllers;
 
 namespace Tests
 {
     public class Tests
     {
-        [SetUp]
+     
+        [OneTimeSetUp]
         public void Setup()
         {
-            
+         
         }
 
+       
         [Test]
         public async System.Threading.Tasks.Task Test1Async()
         {
@@ -31,5 +38,8 @@ namespace Tests
 
             Assert.IsFalse(result);
         }
+
+       
+
     }
 }

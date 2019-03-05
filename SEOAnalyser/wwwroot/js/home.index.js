@@ -129,18 +129,34 @@ function GenerateGrid(url, data, grid) {
    grid.kendoGrid({
         dataSource: {
             transport: {
-                read: {
-                    type: 'POST',
-                    url: url,
-                    contentType: "application/json",
-                    dataType: "json",
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader("RequestVerificationToken",
-                            $('input:hidden[name="__RequestVerificationToken"]').val());
-                    }
+                read: function (e) {
+                    $.ajax({
+                        url: url,
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        data: JSON.stringify(data),
+                        success: function (result) {
+                            e.success(result);
+                            $('#formAnalyse #analyseInputVal').text(result.errorMessage);
+                        },
+                        error: function (result) {
+                            // notify the data source that the request failed
+                            e.error(result);
+                            $('#formAnalyse #analyseInputVal').text(result.errorMessage);
+                        }
+                    });
+                    //type: 'POST',
+                    //url: url,
+                    //contentType: "application/json",
+                    //dataType: "json",
+                    //beforeSend: function (xhr) {
+                    //    xhr.setRequestHeader("RequestVerificationToken",
+                    //        $('input:hidden[name="__RequestVerificationToken"]').val());
+                    //}
                 },
                 parameterMap: function (options) {
-                    return JSON.stringify(data);
+                    //return JSON.stringify(data);
                 }
             },
             schema: {
@@ -161,9 +177,10 @@ function GenerateGrid(url, data, grid) {
             pageSizes: [5, 10, 20],
             buttonCount: 5
         },
-        scrollable: false,
+       scrollable: false,
+       persistSelection: true,
         columns: columns
-    });
+   }).data("kendoGrid");
 }
 
 

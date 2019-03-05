@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using Microsoft.AspNetCore.Hosting;
 using SEOAnalyser.Areas.WebAPI.Models;
 using System;
 using System.Collections.Generic;
@@ -10,8 +11,7 @@ namespace SEOAnalyser.Areas.WebAPI.Common
 {
     public static class Utilities
     {
-       
-
+        
         /// <summary>
         ///  check whether string input is URL or not
         /// </summary>
@@ -152,8 +152,8 @@ namespace SEOAnalyser.Areas.WebAPI.Common
 
             });
         }
+        
 
-       
 
     }
 }

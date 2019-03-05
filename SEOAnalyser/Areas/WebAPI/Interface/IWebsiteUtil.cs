@@ -7,5 +7,6 @@ namespace SEOAnalyser.Areas.WebAPI.Interface
     public interface IWebsiteUtil
     {
         Task<WebsiteResponseModel> IsDataValidAsync(SEOAnalyserInputModel query);
+       
     }
 }

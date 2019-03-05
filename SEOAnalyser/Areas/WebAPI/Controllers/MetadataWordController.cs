@@ -29,21 +29,29 @@ namespace SEOAnalyser.Areas.WebAPI.Controllers
         {
             var result = new List<BaseResultModel>();
             var lstWords = new List<string>();
-            var resultMsg = await _websiteUtil.IsDataValidAsync(query);
+            string processInput = query.analyseInput;
 
-            //if statuscode is not OK or metadata is empty return empty result
-            if (resultMsg.StatusCode != (int)HttpStatusCode.OK || string.IsNullOrEmpty(resultMsg.MetaData))
-                return Ok(new ApiResponseModel() { ErrorMessage = resultMsg.ErrorMessage, Data = result, Count= 0, Result = "Failed" });
+            if (await Utilities.IsInputUrl(query.analyseInput))
+            {
+                var resultMsg = await _websiteUtil.IsDataValidAsync(query);
+                //if statuscode is not OK or metadata is empty return empty result
+                if (resultMsg.StatusCode != (int)HttpStatusCode.OK || string.IsNullOrEmpty(resultMsg.MetaData))
+                    return Ok(new ApiResponseModel() { ErrorMessage = resultMsg.ErrorMessage, Data = result, Count = 0, Result = "Failed" });
 
-            if (query.checkStopWord)
-                lstWords = await _stopwordUtil.RemoveStopWords(resultMsg.Content);
-            else
-                lstWords = await Utilities.StringToWordList(resultMsg.Content);
+                processInput = resultMsg.MetaData;
 
-         
-            result = await Utilities.WordOccurenceCount(lstWords);
+                if (query.checkStopWord)
+                    lstWords = await _stopwordUtil.RemoveStopWords(processInput);
+                else
+                    lstWords = await Utilities.StringToWordList(processInput);
+
+                result = await Utilities.WordOccurenceCount(lstWords);
+               
+
+            }
 
             return Ok(new ApiResponseModel() { Result = "Success", Data = result, Count = result.Count() });
+
         }
 
 

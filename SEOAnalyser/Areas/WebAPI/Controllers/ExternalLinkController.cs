@@ -26,20 +26,27 @@ namespace SEOAnalyser.Areas.WebAPI.Controllers
         public async Task<IActionResult> GetAsync([FromBody] SEOAnalyserInputModel query)
         {
             var result = new List<BaseResultModel>();
-            var resultMsg = await _websiteUtil.IsDataValidAsync(query);
+            string processInput = query.analyseInput;
 
-            //if statuscode is not OK or metadata is empty return empty result
-            if (resultMsg.StatusCode != (int)HttpStatusCode.OK || resultMsg.ExtLinks == null)
-                return Ok(new ApiResponseModel() { ErrorMessage = resultMsg.ErrorMessage, Data = result, Count = 0, Result = "Failed" });
+            if (await Utilities.IsInputUrl(query.analyseInput))
+            {
+                var resultMsg = await _websiteUtil.IsDataValidAsync(query);
+                //if statuscode is not OK or extlinks is empty return empty result
+                if (resultMsg.StatusCode != (int)HttpStatusCode.OK || resultMsg.ExtLinks == null || resultMsg.ExtLinks.Count == 0)
+                    return Ok(new ApiResponseModel() { ErrorMessage = resultMsg.ErrorMessage, Data = result, Count = 0, Result = "Failed" });
 
-            //get external links from results
-            var ExtLinks = resultMsg.ExtLinks;
-            
-            result = await Utilities.WordOccurenceCount(ExtLinks);
 
-            return Ok(new ApiResponseModel() { Result = "Success", Data = result, Count = result.Count() }); 
+                //get external links from results
+                var ExtLinks = resultMsg.ExtLinks;
+
+                result = await Utilities.WordOccurenceCount(ExtLinks);
+               
+            }
+
+            return Ok(new ApiResponseModel() { Result = "Success", Data = result, Count = result.Count() });
+
         }
 
-       
+
     }
 }

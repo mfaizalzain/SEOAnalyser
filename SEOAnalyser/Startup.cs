@@ -19,11 +19,13 @@ namespace SEOAnalyser
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IHostingEnvironment env, IConfiguration configuration)
         {
+            Environment = env;
             Configuration = configuration;
         }
 
+        public IHostingEnvironment Environment { get; }
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -40,6 +42,7 @@ namespace SEOAnalyser
             services.AddSingleton<IExternalLinkUtil, ExternalLinkUtil>();
             services.AddSingleton<IWebsiteUtil, WebsiteUtil>();
             services.AddSingleton<IStopWordUtil, StopWordUtil>();
+          
 
             //register elmah logging
             //services.AddElmah();

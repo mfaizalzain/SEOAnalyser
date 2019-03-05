@@ -27,20 +27,25 @@ namespace SEOAnalyser.Areas.WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> GetAsync([FromBody] SEOAnalyserInputModel query)
         {
-           
-            var resultMsg = await _websiteUtil.IsDataValidAsync(query);
-
             var result = new List<BaseResultModel>();
             var lstWords = new List<string>();
+            string processInput = query.analyseInput;
 
-            //if statuscode is not OK or metadata is empty return empty result
-            if (resultMsg.StatusCode != (int)HttpStatusCode.OK || string.IsNullOrEmpty(resultMsg.Content))
-                return Ok(new ApiResponseModel() {ErrorMessage = resultMsg.ErrorMessage, Data = result, Count = 0, Result = "Failed" });
+            if (await Utilities.IsInputUrl(query.analyseInput))
+            {
+                var resultMsg = await _websiteUtil.IsDataValidAsync(query);
+                //if statuscode is not OK or metadata is empty return empty result
+                if (resultMsg.StatusCode != (int)HttpStatusCode.OK || string.IsNullOrEmpty(resultMsg.Content))
+                    return Ok(new ApiResponseModel() { ErrorMessage = resultMsg.ErrorMessage, Data = result, Count = 0, Result = "Failed" });
 
+                processInput = resultMsg.Content;
+            }
+            
             if (query.checkStopWord)
-                lstWords = await _stopwordUtil.RemoveStopWords(resultMsg.Content);
+                lstWords = await _stopwordUtil.RemoveStopWords(processInput);
             else
-                lstWords = await Utilities.StringToWordList(resultMsg.Content);
+                lstWords = await Utilities.StringToWordList(processInput);
+          
             
              result = await Utilities.WordOccurenceCount(lstWords);
 

@@ -1,4 +1,6 @@
 ﻿using HtmlAgilityPack;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using SEOAnalyser.Areas.WebAPI.Common;
 using SEOAnalyser.Areas.WebAPI.Interface;
 using SEOAnalyser.Areas.WebAPI.Models;
@@ -19,7 +21,8 @@ namespace SEOAnalyser.Areas.WebAPI.Repository
        
         private readonly IStopWordUtil _stopwordUtil;
         private readonly IExternalLinkUtil _extLinkUtil;
-
+     
+      
         public WebsiteUtil(IStopWordUtil stopwordUtil, IExternalLinkUtil extLinkUtil)
         {
             _stopwordUtil = stopwordUtil;
@@ -34,12 +37,9 @@ namespace SEOAnalyser.Areas.WebAPI.Repository
            
             var result = new WebsiteResponseModel();
             string input = query.analyseInput;
-            string url = string.Empty;
+            string url = input;
             string metadata = string.Empty;
            
-            if (await Utilities.IsInputUrl(input))
-            {
-                url = input;
 
                 try
                 {
@@ -61,24 +61,18 @@ namespace SEOAnalyser.Areas.WebAPI.Repository
                             var doc = new HtmlDocument();
                             var sb = new List<string>();
                             doc.LoadHtml(input);
-                            var words = doc.DocumentNode.SelectNodes("//body").Select(x => x.InnerText);
+                            var words = doc.DocumentNode.SelectNodes("//body").Select(x => x.InnerText).FirstOrDefault();
 
                             var str = string.Empty;
-                            
-                            foreach (var node in words)
-                            {
-                                char[] arr = node.Trim().ToCharArray();
-                                arr = Array.FindAll(arr, (c => (char.IsLetter(c)
-                                                             || char.IsWhiteSpace(c)
-                                                             || c == '-')));
-                                str = new string(arr);
 
-                                if(!string.IsNullOrEmpty(str.Trim()))
-                                    sb.Add(str.Trim());
-                            }
+                            char[] arr = words.Trim().ToCharArray();
+                            arr = Array.FindAll(arr, (c => (char.IsLetter(c)
+                                                         || char.IsWhiteSpace(c)
+                                                         || c == '-')));
+                            str = new string(arr);
 
-                            input = sb.Aggregate(string.Concat);
-                           
+                            input = str;
+
                             //get metadata only if the metadata checkbox is ticked
                             if (query.checkMetadata)
                                 metadata = await Utilities.GetMetaData(response.Content.ReadAsStringAsync().ToString());
@@ -89,22 +83,19 @@ namespace SEOAnalyser.Areas.WebAPI.Repository
                            
                     }
                 }
-                catch (WebException ex)
+                catch (Exception ex)
                 {
+                    result.StatusCode = (int)HttpStatusCode.NotFound;
                     result.ErrorMessage = ex.Message;
                 }
-            }
-            else
-            {
-                //if the input is text then pass as statuscode OK
-                result.StatusCode = (int)HttpStatusCode.OK;
-               
-            }
+           
 
             result.Content = input.ToLower();
             result.MetaData = metadata;
 
             return result;
         }
+
+
     }
 }
